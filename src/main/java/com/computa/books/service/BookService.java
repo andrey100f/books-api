@@ -6,6 +6,7 @@ import com.computa.books.model.exception.ResourceNotFoundException;
 import com.computa.books.model.mapper.BookMapper;
 import com.computa.books.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,19 +40,25 @@ public class BookService {
                 .orElseThrow(() -> new InvalidResourceException("Invalid resource"));
     }
 
-    public BookDto getBookById(Long id) {
+    public BookDto getBookById(String id) {
         return this.bookRepository.findById(id)
                 .map(this.bookMapper::mapToBookDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
     }
 
-    public void deleteBook(Long id) {
+    public void deleteBook(String id) {
         this.bookRepository.findById(id)
                 .map(book -> {
                     this.bookRepository.delete(book);
                     return book;
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
+    }
+
+    public List<BookDto> getAllBookWithYearGreaterThan(Long bookYear) {
+        return this.bookRepository.findAllBooksWithYearGreaterThan(bookYear).stream()
+                .map(this.bookMapper::mapToBookDto)
+                .toList();
     }
 
 }

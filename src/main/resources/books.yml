@@ -67,8 +67,7 @@ paths:
                   description: id of the book
                   required: true
                   schema:
-                      type: integer
-                      format: int64
+                      type: string
             responses:
                 '200':
                     description: successful operation
@@ -88,13 +87,36 @@ paths:
                   description: id of the book to be deleted
                   required: true
                   schema:
-                      type: integer
-                      format: int64
+                      type: string
             responses:
                 '204':
                     description: operation successful
                 '404':
                     description: The book was not found
+                '400':
+                    description: The input is not right
+    /books/filterByYear/{bookYear}:
+        get:
+            summary: Gets all books with year greater than a given value
+            description: Returns a list of books
+            operationId: getAllBooksWithYearsGreaterThan
+            parameters:
+                - name: bookYear
+                  in: path
+                  description: The year of the searched books
+                  required: true
+                  schema:
+                      type: integer
+                      format: int64
+            responses:
+                '200':
+                    description: An array of books
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Book'
                 '400':
                     description: The input is not right
 components:
@@ -104,8 +126,7 @@ components:
             properties:
                 id:
                     description: Id of the book
-                    type: integer
-                    format: int64
+                    type: string
                 title:
                     description: Title of the book
                     type: string

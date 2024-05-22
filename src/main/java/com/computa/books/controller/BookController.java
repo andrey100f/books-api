@@ -29,13 +29,13 @@ public class BookController implements BooksApi {
     }
 
     @Override
-    public ResponseEntity<Void> deleteBook(Long id) {
+    public ResponseEntity<Void> deleteBook(String id) {
         this.bookService.deleteBook(id);
         return ResponseEntity.noContent().build();
     }
 
     @Override
-    public ResponseEntity<BookDto> getBookById(Long id) {
+    public ResponseEntity<BookDto> getBookById(String id) {
         return ResponseEntity.ok(this.bookService.getBookById(id));
     }
 
@@ -44,4 +44,8 @@ public class BookController implements BooksApi {
         return ResponseEntity.ok(this.bookService.updateBook(bookDto));
     }
 
+    @Override
+    public ResponseEntity<List<BookDto>> getAllBooksWithYearsGreaterThan(Long bookYear) {
+        return ResponseEntity.ok(this.bookService.getAllBookWithYearGreaterThan(bookYear));
+    }
 }

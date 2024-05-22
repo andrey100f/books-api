@@ -12,11 +12,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 
-@Entity
-@Table(name = "books")
+@Document(collection = "books")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,8 +25,7 @@ import java.io.Serializable;
 public class Book implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @Column(name = "title")
     private String title;
