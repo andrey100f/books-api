@@ -77,6 +77,8 @@ paths:
                                 $ref: '#/components/schemas/Book'
                 '400':
                     description: The input is not right
+                '404':
+                    description: The book is not found
         delete:
             summary: Deletes a book
             description: delete a book
@@ -119,6 +121,30 @@ paths:
                                     $ref: '#/components/schemas/Book'
                 '400':
                     description: The input is not right
+                '404':
+                    description: The book is not found
+    /books/filterByIsbn/{isbn}:
+        get:
+            summary: Get book by isbn
+            description: Returns a single book
+            operationId: getBookByIsbn
+            parameters:
+                - name: isbn
+                  in: path
+                  description: the isbn of the book
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                200:
+                    description: Successful operation
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Book'
+                400:
+                    description: The input is not right
+
 components:
     schemas:
         Book:
@@ -140,6 +166,22 @@ components:
                     type: integer
                     format: int64
                     minimum: 1
+                type:
+                    description: The type of the book
+                    type: string
+                    x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank"
+                isbn:
+                    description: The type of the book
+                    type: string
+                    x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank"
+                description:
+                    description: The type of the book
+                    type: string
+                    x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank"
             required:
                 - title
                 - author
+                - bookYear
+                - type
+                - isbn
+                - description

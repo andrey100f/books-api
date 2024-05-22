@@ -1,21 +1,20 @@
 package com.computa.books.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
 
+/**
+ * Represents a book entity stored  in the MongoDB collection
+ */
 @Document(collection = "books")
 @Getter
 @Setter
@@ -27,13 +26,23 @@ public class Book implements Serializable {
     @Id
     private String id;
 
-    @Column(name = "title")
+    @Field(name = "title")
     private String title;
 
-    @Column(name = "author")
+    @Field(name = "author")
     private String author;
 
-    @Column(name = "book_year")
+    @Field(name = "book_year")
     private Long bookYear;
+
+    @Field(name = "type")
+    private String type;
+
+    @Indexed
+    @Field(name = "isbn")
+    private String isbn;
+
+    @Field(name = "description")
+    private String description;
 
 }
