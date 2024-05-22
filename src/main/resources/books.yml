@@ -1,0 +1,124 @@
+openapi: 3.0.0
+info:
+    title: Library API
+    version: 1.0.0
+servers:
+    - url: http://localhost:8080
+paths:
+    /books:
+        get:
+            summary: Get all books
+            description: Returns the list of all books
+            operationId: getAllBooks
+            responses:
+                '200':
+                    description: An array of Books
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Book'
+                '400':
+                    description: The input is not right
+        post:
+            summary: Add a new book to library
+            description: Add a new book to the library
+            operationId: addBook
+            requestBody:
+                description: Create a new book
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Book'
+                required: true
+            responses:
+                '201':
+                    description: Successful operation
+                '400':
+                    description: The request body contains invalid input
+        put:
+            summary: Updates a book
+            description: Returns the book updated
+            operationId: updateBook
+            requestBody:
+                description: update a book
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Book'
+            responses:
+                '200':
+                    description: successful operation
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Book'
+                '400':
+                    description: The request body contains invalid input
+    /books/{id}:
+        get:
+            summary: Get book by id
+            description: Returns a single book
+            operationId: getBookById
+            parameters:
+                - name: id
+                  in: path
+                  description: id of the book
+                  required: true
+                  schema:
+                      type: integer
+                      format: int64
+            responses:
+                '200':
+                    description: successful operation
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Book'
+                '400':
+                    description: The input is not right
+        delete:
+            summary: Deletes a book
+            description: delete a book
+            operationId: deleteBook
+            parameters:
+                - name: id
+                  in: path
+                  description: id of the book to be deleted
+                  required: true
+                  schema:
+                      type: integer
+                      format: int64
+            responses:
+                '204':
+                    description: operation successful
+                '404':
+                    description: The book was not found
+                '400':
+                    description: The input is not right
+components:
+    schemas:
+        Book:
+            type: object
+            properties:
+                id:
+                    description: Id of the book
+                    type: integer
+                    format: int64
+                title:
+                    description: Title of the book
+                    type: string
+                    x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank"
+                author:
+                    description: Author of the book
+                    type: string
+                    x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank"
+                bookYear:
+                    description: The year of the book
+                    type: integer
+                    format: int64
+                    minimum: 1
+            required:
+                - title
+                - author
