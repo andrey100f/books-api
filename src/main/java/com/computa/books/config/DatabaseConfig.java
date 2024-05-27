@@ -34,35 +34,35 @@ public class DatabaseConfig {
     /**
      * Inserts sample data in the MongoDB collection for the Book class
      */
-    @PostConstruct
-    public void insertData() {
-        for(int i = 0; i < 100; i++) {
-            Book book = Book.builder()
-                    .title("titlu" + i)
-                    .author("autor" + i)
-                    .bookYear(2024L)
-                    .type("tip" + i)
-                    .description("descriere" + i)
-                    .isbn("isbn" + i)
-                    .build();
-
-            this.mongoTemplate.insert(book);
-        }
-    }
+//    @PostConstruct
+//    public void insertData() {
+//        for(int i = 0; i < 100; i++) {
+//            Book book = Book.builder()
+//                    .title("titlu" + i)
+//                    .author("autor" + i)
+//                    .bookYear(2024L)
+//                    .type("tip" + i)
+//                    .description("descriere" + i)
+//                    .isbn("isbn" + i)
+//                    .build();
+//
+//            this.mongoTemplate.insert(book);
+//        }
+//    }
 
     /**
      * Removes the sample data from the MongoDB collection for the Book class
      */
-    @PreDestroy
-    public void removeData() {
-        for(int i = 0; i < 100; i++) {
-            Query query = new Query();
-            query.addCriteria(Criteria.where("title").is("titlu" + i));
-
-            this.mongoTemplate.remove(query, Book.class);
-        }
-
-        this.mongoTemplate.indexOps(Book.class).dropIndex("book_year_1");
-    }
+//    @PreDestroy
+//    public void removeData() {
+//        for(int i = 0; i < 100; i++) {
+//            Query query = new Query();
+//            query.addCriteria(Criteria.where("title").is("titlu" + i));
+//
+//            this.mongoTemplate.remove(query, Book.class);
+//        }
+//
+//        this.mongoTemplate.indexOps(Book.class).dropIndex("book_year_1");
+//    }
 
 }

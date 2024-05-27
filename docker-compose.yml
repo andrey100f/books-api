@@ -1,0 +1,38 @@
+#version: '3.1'
+
+services:
+  mongo:
+    image: mongo
+    container_name: mongo-container
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_SERVER: mongo
+      MONGO_INITDB_ROOT_USERNAME: andrey
+      MONGO_INITDB_ROOT_PASSWORD: andrey100f
+      MONGO_INITDB_ROOT_DATABASE: library_db
+
+    healthcheck:
+      test: [ 'CMD' , 'echo', '''db.runCommand("ping").ok''', '|', 'mongo', 'localhost:27017/test', '--quiet' ]
+  app:
+    image: books-api-app
+    container_name: app-container
+    ports:
+      - 127.0.0.1:8080:8080
+    restart: on-failure
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express-container
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:8081:8081
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://andrey:andrey100f@mongo:27017/library_db?authSource=admin
+      ME_CONFIG_BASICAUTH_USERNAME: andrey
+      ME_CONFIG_BASICAUTH_PASSWORD: andrey100f
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password

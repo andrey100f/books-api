@@ -7,6 +7,8 @@ import com.computa.books.repository.BookRepository;
 import com.computa.books.service.BookService;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,16 +25,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BookController.class)
 class BookControllerTest {
 
-    @MockBean
+    @Mock
     private BookService bookService;
 
-    @MockBean
+    @Mock
     private BookRepository bookRepository;
 
-    @MockBean
+    @Mock
     private BookMapper bookMapper;
 
-    @MockBean
+    @Mock
     private MongoTemplate mongoTemplate;
 
     @Autowired
