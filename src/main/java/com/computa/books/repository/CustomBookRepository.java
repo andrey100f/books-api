@@ -13,17 +13,24 @@ import java.util.Optional;
 public interface CustomBookRepository {
 
     /**
-     * Finds all books with a year greater than the specified year
-     * @param bookYear the year to compare against
-     * @return a list of book objects with a year greater than the specified year
+     * Retrieves a book by its field
+     * @param key field name
+     * @param value field value
+     * @param tClass the class type of the object searched
+     * @return the retrieved object of type S
+     * @param <T> the type of the given value
+     * @param <S> the type of the searched objects
      */
-    List<Book> findAllBooksWithYearGreaterThan(Long bookYear);
+    <T, S> Optional<S> findBookByField(String key, T value, Class<S> tClass);
 
     /**
-     * Retrieves a book by its isbn
-     * @param isbn the isbn of the book to be retrieved
-     * @return the retrieved Book object
+     * Retrieves a list of books with a field value greater than a specified input
+     * @param key field name
+     * @param value field value
+     * @param tClass the class type of the object searched
+     * @return a list of objects of type S
+     * @param <T> the type of the given value
+     * @param <S> the type of the searched objects
      */
-    Optional<Book> findBookByIsbn(String isbn);
-
+    <T, S> List<S> findAllBooksWithValueGreaterThan(String key, T value, Class<S> tClass);
 }

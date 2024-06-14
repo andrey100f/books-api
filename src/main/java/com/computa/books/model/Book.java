@@ -1,12 +1,11 @@
 package com.computa.books.model;
 
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -38,7 +37,6 @@ public class Book implements Serializable {
     @Field(name = "type")
     private String type;
 
-    @Indexed
     @Field(name = "isbn")
     private String isbn;
 

@@ -1,11 +1,9 @@
 services:
   mongo-test:
     image: mongo
-    container_name: mongo-test-container
+    container_name: mongo-test-container_v2
     ports:
-      - "27019:27019"
+      - 127.0.0.1:27019:27017
     environment:
       MONGO_INITDB_ROOT_SERVER: mongo-test
-      MONGO_INITDB_ROOT_USERNAME: andrey
-      MONGO_INITDB_ROOT_PASSWORD: andrey100f
       MONGO_INITDB_ROOT_DATABASE: library_test_db

@@ -5,10 +5,9 @@ import com.computa.books.model.exception.ResourceNotFoundException;
 import com.computa.books.model.mapper.BookMapper;
 import com.computa.books.repository.BookRepository;
 import com.computa.books.service.BookService;
+import com.computa.books.utils.BooksTestUtils;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -25,16 +24,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BookController.class)
 class BookControllerTest {
 
-    @Mock
+    @MockBean
     private BookService bookService;
 
-    @Mock
+    @MockBean
     private BookRepository bookRepository;
 
-    @Mock
+    @MockBean
     private BookMapper bookMapper;
 
-    @Mock
+    @MockBean
     private MongoTemplate mongoTemplate;
 
     @Autowired
@@ -42,16 +41,7 @@ class BookControllerTest {
 
     @Test
     public void testGetAllBooks() throws Exception {
-        BookDto book1 = new BookDto();
-        book1.setId("664c57b4314734178cfaac51");
-        book1.setTitle("To Kill a Mockingbird");
-        book1.setAuthor("Harper Lee");
-        book1.setBookYear(1960L);
-        book1.setType("Fiction");
-        book1.setIsbn("978-0-06-112008-4");
-        book1.setDescription("A novel about the serious issues of rape and racial inequality narrate…");
-
-        List<BookDto> booksFromService = List.of(book1);
+        List<BookDto> booksFromService = BooksTestUtils.getListOfBooksDto();
 
         when(this.bookService.getAllBooks()).thenReturn(booksFromService);
 
@@ -61,14 +51,7 @@ class BookControllerTest {
 
     @Test
     public void testGetBookById_ShouldReturnOk() throws Exception {
-        BookDto bookDto = new BookDto();
-        bookDto.setId("664c57b4314734178cfaac51");
-        bookDto.setTitle("To Kill a Mockingbird");
-        bookDto.setAuthor("Harper Lee");
-        bookDto.setBookYear(1960L);
-        bookDto.setType("Fiction");
-        bookDto.setIsbn("978-0-06-112008-4");
-        bookDto.setDescription("A novel about the serious issues of rape and racial inequality narrate…");
+        BookDto bookDto = BooksTestUtils.getBookDto();
 
         when(this.bookService.getBookById(bookDto.getId())).thenReturn(bookDto);
 
@@ -77,7 +60,7 @@ class BookControllerTest {
 
     @Test
     public void testGetBookById_ShouldThrowNoSuchElementException() throws Exception {
-        String bookId = "664c57b4314734178cfaac51";
+        String bookId = BooksTestUtils.getBookId();
 
         when(this.bookService.getBookById(bookId)).thenThrow(ResourceNotFoundException.class);
 
@@ -86,15 +69,8 @@ class BookControllerTest {
 
     @Test
     public void testGetBooksWithYearGreaterThan_ShouldReturnOk() throws Exception {
-        Long bookYear = 1900L;
-
-        BookDto bookDto = new BookDto();
-        bookDto.setId("664c57b4314734178cfaac51");
-        bookDto.setTitle("1984");
-        bookDto.setAuthor("George Orwel");
-        bookDto.setBookYear(1949L);
-
-        List<BookDto> books = List.of(bookDto);
+        Long bookYear = BooksTestUtils.getBookYear();
+        List<BookDto> books = BooksTestUtils.getListOfBooksDto();
 
         when(this.bookService.getAllBookWithYearGreaterThan(bookYear)).thenReturn(books);
 
@@ -103,33 +79,11 @@ class BookControllerTest {
 
     @Test
     public void testAddBook_ShouldReturnOk() throws Exception {
-        BookDto bookDto = new BookDto();
-        bookDto.setTitle("To Kill a Mockingbird");
-        bookDto.setAuthor("Harper Lee");
-        bookDto.setBookYear(1960L);
-        bookDto.setType("Fiction");
-        bookDto.setIsbn("978-0-06-112008-4");
-        bookDto.setDescription("A novel about the serious issues of rape and racial inequality narrate…");
-
-        BookDto addedBook = new BookDto();
-        addedBook.setId("664c57b4314734178cfaac51");
-        addedBook.setTitle("To Kill a Mockingbird");
-        addedBook.setAuthor("Harper Lee");
-        addedBook.setBookYear(1960L);
-        addedBook.setType("Fiction");
-        addedBook.setIsbn("978-0-06-112008-4");
-        addedBook.setDescription("A novel about the serious issues of rape and racial inequality narrate…");
+        BookDto bookDto = BooksTestUtils.getAddBookDto();
+        BookDto addedBook = BooksTestUtils.getBookDto();
+        JSONObject jsonObject = BooksTestUtils.getBookJsonObject(bookDto);
 
         when(this.bookService.addBook(bookDto)).thenReturn(addedBook);
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", bookDto.getId());
-        jsonObject.put("title", bookDto.getTitle());
-        jsonObject.put("author", bookDto.getAuthor());
-        jsonObject.put("bookYear", bookDto.getBookYear());
-        jsonObject.put("type", bookDto.getType());
-        jsonObject.put("isbn", bookDto.getIsbn());
-        jsonObject.put("description", bookDto.getDescription());
 
         this.mockMvc.perform(post("/books")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -140,23 +94,8 @@ class BookControllerTest {
 
     @Test
     public void testAddBook_ShouldThrowMethodArgumentNotValidException() throws Exception {
-        BookDto bookDto = new BookDto();
-        bookDto.setId("664c57b4314734178cfaac51");
-        bookDto.setTitle("");
-        bookDto.setAuthor("Harper Lee");
-        bookDto.setBookYear(1960L);
-        bookDto.setType("Fiction");
-        bookDto.setIsbn("978-0-06-112008-4");
-        bookDto.setDescription("A novel about the serious issues of rape and racial inequality narrate…");
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", bookDto.getId());
-        jsonObject.put("title", bookDto.getTitle());
-        jsonObject.put("author", bookDto.getAuthor());
-        jsonObject.put("bookYear", bookDto.getBookYear());
-        jsonObject.put("type", bookDto.getType());
-        jsonObject.put("isbn", bookDto.getIsbn());
-        jsonObject.put("description", bookDto.getDescription());
+        BookDto bookDto = BooksTestUtils.getUpdateFailBookDto();
+        JSONObject jsonObject = BooksTestUtils.getBookJsonObject(bookDto);
 
         this.mockMvc.perform(post("/books")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -167,25 +106,10 @@ class BookControllerTest {
 
     @Test
     public void testUpdateBook_ShouldReturnOk() throws Exception {
-        BookDto bookDto = new BookDto();
-        bookDto.setId("664c57b4314734178cfaac51");
-        bookDto.setTitle("To Kill a Mockingbird");
-        bookDto.setAuthor("Harper Lee");
-        bookDto.setBookYear(1960L);
-        bookDto.setType("Fiction");
-        bookDto.setIsbn("978-0-06-112008-4");
-        bookDto.setDescription("A novel about the serious issues of rape and racial inequality narrate…");
+        BookDto bookDto = BooksTestUtils.getBookDto();
+        JSONObject jsonObject = BooksTestUtils.getBookJsonObject(bookDto);
 
         when(this.bookService.updateBook(bookDto)).thenReturn(bookDto);
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", "664c57b4314734178cfaac51");
-        jsonObject.put("title", bookDto.getTitle());
-        jsonObject.put("author", bookDto.getAuthor());
-        jsonObject.put("bookYear", bookDto.getBookYear());
-        jsonObject.put("type", bookDto.getType());
-        jsonObject.put("isbn", bookDto.getIsbn());
-        jsonObject.put("description", bookDto.getDescription());
 
         this.mockMvc.perform(put("/books")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -196,25 +120,10 @@ class BookControllerTest {
 
     @Test
     public void testUpdateBook_ShouldThrowResourceNotFoundException() throws Exception {
-        BookDto bookDto = new BookDto();
-        bookDto.setId("664c57b4314734178cfaac51");
-        bookDto.setTitle("To Kill a Mockingbird");
-        bookDto.setAuthor("Harper Lee");
-        bookDto.setBookYear(1960L);
-        bookDto.setType("Fiction");
-        bookDto.setIsbn("978-0-06-112008-4");
-        bookDto.setDescription("A novel about the serious issues of rape and racial inequality narrate…");
+        BookDto bookDto = BooksTestUtils.getBookDto();
+        JSONObject jsonObject = BooksTestUtils.getBookJsonObject(bookDto);
 
         when(this.bookService.updateBook(bookDto)).thenThrow(ResourceNotFoundException.class);
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", "664c57b4314734178cfaac51");
-        jsonObject.put("title", bookDto.getTitle());
-        jsonObject.put("author", bookDto.getAuthor());
-        jsonObject.put("bookYear", bookDto.getBookYear());
-        jsonObject.put("type", bookDto.getType());
-        jsonObject.put("isbn", bookDto.getIsbn());
-        jsonObject.put("description", bookDto.getDescription());
 
         this.mockMvc.perform(put("/books")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -224,24 +133,9 @@ class BookControllerTest {
     }
 
     @Test
-    public void testUpdateBook_ShouldThrowMethodArgumentNotFoundException() throws Exception {
-        BookDto bookDto = new BookDto();
-        bookDto.setId("664c57b4314734178cfaac51");
-        bookDto.setTitle("");
-        bookDto.setAuthor("Harper Lee");
-        bookDto.setBookYear(1960L);
-        bookDto.setType("Fiction");
-        bookDto.setIsbn("978-0-06-112008-4");
-        bookDto.setDescription("A novel about the serious issues of rape and racial inequality narrate…");
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", "664c57b4314734178cfaac51");
-        jsonObject.put("title", bookDto.getTitle());
-        jsonObject.put("author", bookDto.getAuthor());
-        jsonObject.put("bookYear", bookDto.getBookYear());
-        jsonObject.put("type", bookDto.getType());
-        jsonObject.put("isbn", bookDto.getIsbn());
-        jsonObject.put("description", bookDto.getDescription());
+    public void testUpdateBook_ShouldThrowMethodArgumentNotValidException() throws Exception {
+        BookDto bookDto = BooksTestUtils.getUpdateFailBookDto();
+        JSONObject jsonObject = BooksTestUtils.getBookJsonObject(bookDto);
 
         this.mockMvc.perform(put("/books")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -252,7 +146,7 @@ class BookControllerTest {
 
     @Test
     public void testDeleteBook_ShouldReturnOk() throws Exception {
-        String bookId = "664c57b4314734178cfaac51";
+        String bookId = BooksTestUtils.getBookId();
 
         doNothing().when(this.bookService).deleteBook(bookId);
 
@@ -261,7 +155,7 @@ class BookControllerTest {
 
     @Test
     public void testDeleteBook_ShouldThrowResourceNotFoundException() throws Exception {
-        String bookId = "664c57b4314734178cfaac51";
+        String bookId = BooksTestUtils.getBookId();
 
         doThrow(ResourceNotFoundException.class).when(this.bookService).deleteBook(bookId);
 
@@ -270,14 +164,7 @@ class BookControllerTest {
 
     @Test
     void testBookByIsbn_ShouldReturnOk() throws Exception {
-        BookDto bookDto = new BookDto();
-        bookDto.setId("664c57b4314734178cfaac51");
-        bookDto.setTitle("To Kill a Mockingbird");
-        bookDto.setAuthor("Harper Lee");
-        bookDto.setBookYear(1960L);
-        bookDto.setType("Fiction");
-        bookDto.setIsbn("978-0-06-112008-4");
-        bookDto.setDescription("A novel about the serious issues of rape and racial inequality narrate…");
+        BookDto bookDto = BooksTestUtils.getBookDto();
 
         when(this.bookService.getBookByIsbn(bookDto.getIsbn())).thenReturn(bookDto);
 
@@ -286,7 +173,7 @@ class BookControllerTest {
 
     @Test
     public void testGetBookByIsbn_ShouldThrowResourceNotFoundException() throws Exception {
-        String isbn = "978-0-06-112008-4";
+        String isbn = BooksTestUtils.getBookIsbn();
 
         when(this.bookService.getBookByIsbn(isbn)).thenThrow(ResourceNotFoundException.class);
 

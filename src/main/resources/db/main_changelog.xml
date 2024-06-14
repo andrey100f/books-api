@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:mongodb="http://www.liquibase.org/xml/ns/mongodb"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+         http://www.liquibase.org/xml/ns/mongodb
+         http://www.liquibase.org/xml/ns/mongodb/liquibase-mongodb-latest.xsd">
+
+    <changeSet id="1" author="andrei.forminte">
+        <mongodb:createCollection collectionName="books">
+            <mongodb:options>
+                {
+                validator: {
+                $jsonSchema: {
+                bsonType: "object",
+                required: ["name", "address"],
+                properties: {
+                title: {
+                bsonType: "string",
+                description: "The Book Title"
+                },
+                author: {
+                bsonType: "string",
+                description: "The Book Author"
+                },
+                book_year: {
+                bsonType: "long",
+                description: "The Book Year"
+                },
+                type: {
+                bsonType: "string",
+                description: "The Book Type"
+                },
+                isbn: {
+                bsonType: "string",
+                description: "The book ISBN"
+                },
+                description: {
+                bsonType: "string",
+                description: "The Book Description"
+                }
+                }
+                }
+                },
+                validationAction: "warn",
+                validationLevel: "strict"
+                }
+            </mongodb:options>
+        </mongodb:createCollection>
+    </changeSet>
+
+    <changeSet id="2" author="andrei.forminte">
+        <mongodb:createIndex collectionName="books">
+            <mongodb:keys>
+                { isbn: 1, type: 1}
+            </mongodb:keys>
+            <mongodb:options>
+                {unique: true, name: "isbn_index"}
+            </mongodb:options>
+        </mongodb:createIndex>
+    </changeSet>
+
+    <changeSet id="3" author="andrei.forminte">
+        <mongodb:insertMany collectionName="books">
+            <mongodb:documents>
+                [
+                {
+                title: "To Kill a Mockingbird",
+                author: "Harper Lee",
+                book_year: 1960,
+                type: "Fiction",
+                isbn: "978-0-06-112008-4",
+                description: "A novel about the serious issues of rape and racial inequality narrated by a young girl in the Deep South."
+                },
+                {
+                title: "1984",
+                author: "George Orwell",
+                book_year: 1949,
+                type: "Dystopian",
+                isbn: "978-0-452-28423-4",
+                description: "A dystopian social science fiction novel and cautionary tale about the dangers of totalitarianism."
+                },
+                {
+                title: "Pride and Prejudice",
+                author: "Jane Austen",
+                book_year: 1813,
+                type: "Romance",
+                isbn: "978-0-19-953556-9",
+                description: "A romantic novel that charts the emotional development of the protagonist Elizabeth Bennet."
+                },
+                {
+                title: "The Great Gatsby",
+                author: "F. Scott Fitzgerald",
+                book_year: 1925,
+                type: "Tragedy",
+                isbn: "978-0-7432-7356-5",
+                description: "A story about the young and mysterious millionaire Jay Gatsby and his quixotic passion for the beautiful Daisy Buchanan."
+                },
+                {
+                title: "Moby-Dick",
+                author: "Herman Melville",
+                book_year: 1851,
+                type: "Adventure",
+                isbn: "978-0-14-243724-7",
+                description: "A novel about the voyage of the whaling ship Pequod and its captain, Ahab, who is vengefully pursuing the giant white whale Moby Dick."
+                }
+                ]
+            </mongodb:documents>
+        </mongodb:insertMany>
+    </changeSet>
+
+</databaseChangeLog>

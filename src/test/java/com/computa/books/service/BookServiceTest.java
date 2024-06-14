@@ -5,6 +5,7 @@ import com.computa.books.model.BookDto;
 import com.computa.books.model.exception.ResourceNotFoundException;
 import com.computa.books.model.mapper.BookMapper;
 import com.computa.books.repository.BookRepository;
+import com.computa.books.utils.BooksTestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,16 +34,7 @@ class BookServiceTest {
 
     @Test
     public void testFindAllBooks() {
-        Book book1 = Book.builder()
-                .id("664c57b4314734178cfaac51")
-                .title("To Kill a Mockingbird")
-                .author("Harper Lee")
-                .bookYear(1960L)
-                .type("Fiction")
-                .isbn("978-0-06-112008-4")
-                .description("A novel about the serious issues of rape and racial inequality narrate…")
-                .build();
-        List<Book> booksFromRepo = List.of(book1);
+        List<Book> booksFromRepo = BooksTestUtils.getListOfBooks();
 
         when(this.bookRepository.findAll()).thenReturn(booksFromRepo);
 
@@ -52,35 +44,20 @@ class BookServiceTest {
 
     @Test
     public void testFindBookById() {
-        Book book = Book.builder()
-                .id("664c57b4314734178cfaac51")
-                .title("To Kill a Mockingbird")
-                .author("Harper Lee")
-                .bookYear(1960L)
-                .type("Fiction")
-                .isbn("978-0-06-112008-4")
-                .description("A novel about the serious issues of rape and racial inequality narrate…")
-                .build();
-
-        BookDto bookDto = new BookDto();
-        bookDto.setId("664c57b4314734178cfaac51");
-        bookDto.setTitle("To Kill a Mockingbird");
-        bookDto.setAuthor("Harper Lee");
-        bookDto.setBookYear(1960L);
-        bookDto.setType("Fiction");
-        bookDto.setIsbn("978-0-06-112008-4");
-        bookDto.setDescription("A novel about the serious issues of rape and racial inequality narrate…");
+        Book book = BooksTestUtils.getBook();
+        BookDto bookDto = BooksTestUtils.getBookDto();
+        String bookId = BooksTestUtils.getBookId();
 
         when(this.bookMapper.mapToBookDto(Mockito.any())).thenReturn(bookDto);
-        when(this.bookRepository.findById("664c57b4314734178cfaac51")).thenReturn(Optional.of(book));
+        when(this.bookRepository.findById(bookId)).thenReturn(Optional.of(book));
 
-        BookDto bookFromService = this.bookService.getBookById("664c57b4314734178cfaac51");
+        BookDto bookFromService = this.bookService.getBookById(bookId);
         assertNotNull(bookFromService);
     }
 
     @Test
     public void testFindBookById_ShouldThrowNoSuchElementException() {
-        String bookId = "664c57b4314734178cfaac51";
+        String bookId = BooksTestUtils.getBookId();
 
         when(this.bookRepository.findById(bookId)).thenThrow(NoSuchElementException.class);
 
@@ -89,41 +66,9 @@ class BookServiceTest {
 
     @Test
     public void testAddBook() {
-        BookDto bookDto = new BookDto();
-        bookDto.setTitle("To Kill a Mockingbird");
-        bookDto.setAuthor("Harper Lee");
-        bookDto.setBookYear(1960L);
-        bookDto.setType("Fiction");
-        bookDto.setIsbn("978-0-06-112008-4");
-        bookDto.setDescription("A novel about the serious issues of rape and racial inequality narrate…");
-
-        Book bookModel = Book.builder()
-                .title("To Kill a Mockingbird")
-                .author("Harper Lee")
-                .bookYear(1960L)
-                .type("Fiction")
-                .isbn("978-0-06-112008-4")
-                .description("A novel about the serious issues of rape and racial inequality narrate…")
-                .build();
-
-        Book addedBook = Book.builder()
-                .id("664c57b4314734178cfaac51")
-                .title("To Kill a Mockingbird")
-                .author("Harper Lee")
-                .bookYear(1960L)
-                .type("Fiction")
-                .isbn("978-0-06-112008-4")
-                .description("A novel about the serious issues of rape and racial inequality narrate…")
-                .build();
-
-        BookDto addedBookDto = new BookDto();
-        addedBookDto.setId("664c57b4314734178cfaac51");
-        addedBookDto.setTitle("To Kill a Mockingbird");
-        addedBookDto.setAuthor("Harper Lee");
-        addedBookDto.setBookYear(1960L);
-        addedBookDto.setType("Fiction");
-        addedBookDto.setIsbn("978-0-06-112008-4");
-        addedBookDto.setDescription("A novel about the serious issues of rape and racial inequality narrate…");
+        Book bookModel = BooksTestUtils.getAddBook();
+        Book addedBook = BooksTestUtils.getBook();
+        BookDto addedBookDto = BooksTestUtils.getBookDto();
 
         when(this.bookMapper.mapToModel(addedBookDto)).thenReturn(bookModel);
         when(this.bookRepository.save(bookModel)).thenReturn(addedBook);
@@ -135,36 +80,12 @@ class BookServiceTest {
 
     @Test
     public void testUpdateBook_ShouldReturnOk() {
-        Book bookToUpdate = Book.builder()
-                .id("664c57b4314734178cfaac51")
-                .title("To Kill a Mockingbird")
-                .author("Harper Lee")
-                .bookYear(1960L)
-                .type("Fiction")
-                .isbn("978-0-06-112008-4")
-                .description("A novel about the serious issues of rape and racial inequality narrate…")
-                .build();
+        Book bookToUpdate = BooksTestUtils.getBook();
+        Book book = BooksTestUtils.getBook();
+        BookDto bookDto = BooksTestUtils.getBookDto();
+        String bookId = BooksTestUtils.getBookId();
 
-        Book book = Book.builder()
-                .id("664c57b4314734178cfaac51")
-                .title("test update title")
-                .author("Harper Lee")
-                .bookYear(1960L)
-                .type("Fiction")
-                .isbn("978-0-06-112008-4")
-                .description("A novel about the serious issues of rape and racial inequality narrate…")
-                .build();
-
-        BookDto bookDto = new BookDto();
-        bookDto.setId("664c57b4314734178cfaac51");
-        bookDto.setTitle("test update title");
-        bookDto.setAuthor("Harper Lee");
-        bookDto.setBookYear(1960L);
-        bookDto.setType("Fiction");
-        bookDto.setIsbn("978-0-06-112008-4");
-        bookDto.setDescription("A novel about the serious issues of rape and racial inequality narrate…");
-
-        when(this.bookRepository.findById("664c57b4314734178cfaac51")).thenReturn(Optional.of(bookToUpdate));
+        when(this.bookRepository.findById(bookId)).thenReturn(Optional.of(bookToUpdate));
         when(this.bookMapper.mapToModel(bookDto)).thenReturn(book);
         when(this.bookRepository.save(book)).thenReturn(book);
         when(this.bookMapper.mapToBookDto(book)).thenReturn(bookDto);
@@ -176,16 +97,8 @@ class BookServiceTest {
 
     @Test
     public void testUpdateBook_ShouldThrowNoSuchElementException() {
-        String bookId = "664c57b4314734178cfaac51";
-
-        BookDto bookDto = new BookDto();
-        bookDto.setId("664c57b4314734178cfaac51");
-        bookDto.setTitle("test update title");
-        bookDto.setAuthor("Harper Lee");
-        bookDto.setBookYear(1960L);
-        bookDto.setType("Fiction");
-        bookDto.setIsbn("978-0-06-112008-4");
-        bookDto.setDescription("A novel about the serious issues of rape and racial inequality narrate…");
+        String bookId = BooksTestUtils.getBookId();
+        BookDto bookDto = BooksTestUtils.getBookDto();
 
         when(this.bookRepository.findById(bookId)).thenThrow(NoSuchElementException.class);
         assertThrows(NoSuchElementException.class, () -> this.bookService.updateBook(bookDto));
@@ -193,17 +106,8 @@ class BookServiceTest {
 
     @Test
     void testDeleteBook_ShouldReturnOk() {
-        String bookId = "664c57b4314734178cfaac51";
-
-        Book bookToDelete = Book.builder()
-                .id("664c57b4314734178cfaac51")
-                .title("To Kill a Mockingbird")
-                .author("Harper Lee")
-                .bookYear(1960L)
-                .type("Fiction")
-                .isbn("978-0-06-112008-4")
-                .description("A novel about the serious issues of rape and racial inequality narrate…")
-                .build();
+        String bookId = BooksTestUtils.getBookId();
+        Book bookToDelete = BooksTestUtils.getBook();
 
         when(this.bookRepository.findById(bookId)).thenReturn(Optional.of(bookToDelete));
 
@@ -214,7 +118,7 @@ class BookServiceTest {
 
     @Test
     void testDeleteBook_ShouldThrowNoSuchElementException() {
-        String bookId = "664c57b4314734178cfaac51";
+        String bookId = BooksTestUtils.getBookId();
 
         when(this.bookRepository.findById(bookId)).thenThrow(NoSuchElementException.class);
 
@@ -223,37 +127,24 @@ class BookServiceTest {
 
     @Test
     void testGetBookByIsbn_ShouldReturnOk() {
-        Book book = Book.builder()
-                .id("664c57b4314734178cfaac51")
-                .title("To Kill a Mockingbird")
-                .author("Harper Lee")
-                .bookYear(1960L)
-                .type("Fiction")
-                .isbn("978-0-06-112008-4")
-                .description("A novel about the serious issues of rape and racial inequality narrate…")
-                .build();
-
-        BookDto bookDto = new BookDto();
-        bookDto.setId("664c57b4314734178cfaac51");
-        bookDto.setTitle("To Kill a Mockingbird");
-        bookDto.setAuthor("Harper Lee");
-        bookDto.setBookYear(1960L);
-        bookDto.setType("Fiction");
-        bookDto.setIsbn("978-0-06-112008-4");
-        bookDto.setDescription("A novel about the serious issues of rape and racial inequality narrate…");
+        Book book = BooksTestUtils.getBook();
+        BookDto bookDto = BooksTestUtils.getBookDto();
+        String bookIsbn = BooksTestUtils.getBookIsbn();
 
         when(this.bookMapper.mapToBookDto(Mockito.any())).thenReturn(bookDto);
-        when(this.bookRepository.findBookByIsbn("978-0-06-112008-4")).thenReturn(Optional.of(book));
+        when(this.bookRepository.findBookByField("isbn", bookIsbn, Book.class)).
+                thenReturn(Optional.of(book));
 
-        BookDto bookFromService = this.bookService.getBookByIsbn("978-0-06-112008-4");
+        BookDto bookFromService = this.bookService.getBookByIsbn(bookIsbn);
         assertNotNull(bookFromService);
     }
 
     @Test
     void testGetBookByIsbn_ShouldThrowResourceNotFoundException() {
-        String isbn = "978-0-06-112008-4";
+        String isbn = BooksTestUtils.getBookIsbn();
 
-        when(this.bookRepository.findBookByIsbn(isbn)).thenThrow(ResourceNotFoundException.class);
+        when(this.bookRepository.findBookByField("isbn", isbn, Book.class))
+                .thenThrow(ResourceNotFoundException.class);
 
         assertThrows(ResourceNotFoundException.class, () -> this.bookService.getBookByIsbn(isbn));
     }

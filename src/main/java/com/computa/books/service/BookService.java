@@ -1,5 +1,6 @@
 package com.computa.books.service;
 
+import com.computa.books.model.Book;
 import com.computa.books.model.BookDto;
 import com.computa.books.model.exception.InvalidResourceException;
 import com.computa.books.model.exception.ResourceNotFoundException;
@@ -117,7 +118,8 @@ public class BookService {
     public List<BookDto> getAllBookWithYearGreaterThan(Long bookYear) {
         log.info("BookService - starting getBookWithYearGreaterThan task");
 
-        return this.bookRepository.findAllBooksWithYearGreaterThan(bookYear).stream()
+        return this.bookRepository.findAllBooksWithValueGreaterThan("book_year", bookYear, Book.class)
+                .stream()
                 .map(this.bookMapper::mapToBookDto)
                 .toList();
     }
@@ -131,7 +133,7 @@ public class BookService {
     public BookDto getBookByIsbn(String isbn) {
         log.info("BookService - starting getBookByIsbn task");
 
-        return this.bookRepository.findBookByIsbn(isbn)
+        return this.bookRepository.findBookByField("isbn", isbn, Book.class)
                 .map(this.bookMapper::mapToBookDto)
                 .orElseThrow(() -> {
                     log.error("BookService - getBookByIsbn task - Book not found");

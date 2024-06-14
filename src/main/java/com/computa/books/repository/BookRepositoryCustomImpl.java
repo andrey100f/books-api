@@ -1,6 +1,5 @@
 package com.computa.books.repository;
 
-import com.computa.books.model.Book;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -19,23 +18,23 @@ public class BookRepositoryCustomImpl implements CustomBookRepository {
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public List<Book> findAllBooksWithYearGreaterThan(Long bookYear) {
-        log.info("BookRepositoryCustom - starting findAllBooksWithYearGreaterThan task");
+    public <T, S> Optional<S> findBookByField(String key, T value, Class<S> tClass) {
+        log.info("BookRepositoryCustom - starting findAllBookByField task");
 
         Query query = new Query();
-        query.addCriteria(Criteria.where("bookYear").gt(bookYear));
+        query.addCriteria(Criteria.where(key).is(value));
 
-        return this.mongoTemplate.find(query, Book.class);
+        return this.mongoTemplate.find(query, tClass).stream().findFirst();
     }
 
     @Override
-    public Optional<Book> findBookByIsbn(String isbn) {
-        log.info("BookRepositoryCustom - starting findBookByIsbn task");
+    public <T, S> List<S> findAllBooksWithValueGreaterThan(String key, T value, Class<S> tClass) {
+        log.info("BookRepositoryCustom - starting findAllBooksWithValueGreaterThan task");
 
         Query query = new Query();
-        query.addCriteria(Criteria.where("isbn").is(isbn));
+        query.addCriteria(Criteria.where(key).gt(value));
 
-        return this.mongoTemplate.find(query, Book.class).stream().findFirst();
+        return this.mongoTemplate.find(query, tClass);
     }
 
 }
